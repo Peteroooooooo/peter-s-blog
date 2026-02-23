@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogEntry, LogCategory } from '../types';
-import { logs, getAllCategories } from '../data/logs';
+import { logs, getAllCategories } from '../content/logs';
 import { Clock, Search, Terminal, ChevronRight } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 5;

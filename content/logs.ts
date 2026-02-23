@@ -2,7 +2,7 @@ import { LogEntry, LogCategory } from '../types';
 
 // Let Vite automatically find all .md files in the content/logs folder
 // Eager mode bundles them instantly, '?raw' imports them as raw string content
-const logFiles = import.meta.glob('../content/logs/*.md', { eager: true, query: '?raw' });
+const logFiles = import.meta.glob('./logs/*.md', { eager: true, query: '?raw' });
 
 // A minimal parser to extract YAML-style frontmatter without needing external dependencies
 function parseFrontmatter(rawString: string) {
