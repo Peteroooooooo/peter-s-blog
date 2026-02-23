@@ -197,7 +197,7 @@ export const GlobalCube: React.FC = () => {
                     const formattedPct = pct.padStart(4, '0');
                     depthHudRef.current.textContent = `${formattedPct}%`;
                     // HUD floats perfectly ABOVE the cube, moving linearly in 2D
-                    depthHudRef.current.style.transform = `translate(-50%, calc(${absoluteY}px - 60px))`;
+                    depthHudRef.current.style.transform = `translate(-50%, calc(${absoluteY}px - 10px))`;
                 }
 
                 // Update proximity glow & fluid particle system
@@ -463,6 +463,11 @@ export const GlobalCube: React.FC = () => {
                         box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.1);
                         background-image: linear-gradient(135deg, rgba(0,255,255,0.2) 0%, transparent 50%);
                     }
+                    .premium-glass-logs {
+                        background: rgba(0, 255, 255, 0.05);
+                        box-shadow: inset 0 0 0 2px rgba(0, 255, 255, 0.1), inset 0 0 60px rgba(0, 255, 255, 0.6);
+                        background-image: linear-gradient(135deg, rgba(0,255,255,0.2) 0%, transparent 60%);
+                    }
                     /* ═══ MAG-LEV LIGHT TRACK ═══ */
                     /* The Energy Pillar */
                     .maglev-groove {
@@ -517,7 +522,7 @@ export const GlobalCube: React.FC = () => {
                     .maglev-hud-container {
                         position: absolute;
                         top: 0;
-                        left: calc(50% + 24px); /* Slightly nudged right */
+                        left: calc(50% + 50px); /* Slightly nudged right */
                         font-family: 'JetBrains Mono', monospace;
                         font-size: 11px;
                         font-weight: 700;
@@ -568,7 +573,7 @@ export const GlobalCube: React.FC = () => {
                     ref={cubeWrapperRef}
                     className={`relative ${isTransitioningPage ? 'transition-all duration-[900ms] ease-[cubic-bezier(0.23,1,0.32,1)]' : ''}`}
                     style={{
-                        opacity: isLogs ? 0.92 : 1,
+                        opacity: 1, // Restored full brightness on all pages including Logs
                         width: CUBE_SIZE,
                         height: CUBE_SIZE,
                         flexShrink: 0,
@@ -636,7 +641,7 @@ export const GlobalCube: React.FC = () => {
                                             )}
                                         </div>
                                     ))}
-                                    <div className={`absolute inset-0 bg-cyan-500 blur-2xl transition-opacity duration-[1500ms] ${isActivated ? 'opacity-30' : 'opacity-0'}`} />
+                                    <div className={`absolute inset-0 bg-cyan-400 blur-2xl transition-all duration-[1500ms] ${isLogs ? 'opacity-40 scale-125' : isActivated ? 'opacity-30' : 'opacity-0'}`} />
                                 </div>
 
                                 {/* 3. THE PREMIUM CRYSTAL GLASS FACES */}
@@ -645,7 +650,7 @@ export const GlobalCube: React.FC = () => {
                                     { name: 'right', transform: `rotateY(90deg) translateZ(${HALF_SIZE})` }, { name: 'left', transform: `rotateY(-90deg) translateZ(${HALF_SIZE})` },
                                     { name: 'top', transform: `rotateX(90deg) translateZ(${HALF_SIZE})` }, { name: 'bottom', transform: `rotateX(-90deg) translateZ(${HALF_SIZE})` }
                                 ].map((face) => (
-                                    <div key={face.name} className={`absolute inset-0 transition-all duration-[1500ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${isActivated ? 'premium-glass-active' : 'premium-glass group'}`} style={{ transform: face.transform, backfaceVisibility: 'visible' }} />
+                                    <div key={face.name} className={`absolute inset-0 transition-all duration-[1500ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${isLogs ? 'premium-glass-logs' : isActivated ? 'premium-glass-active' : 'premium-glass group'}`} style={{ transform: face.transform, backfaceVisibility: 'visible' }} />
                                 ))}
 
                                 {/* 4. CYBERPUNK HOLOGRAPHIC PROJECTION (bound to cube rotation) */}

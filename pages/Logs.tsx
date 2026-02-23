@@ -504,7 +504,7 @@ export const Logs: React.FC = () => {
                 .logs-page__timeline-line {
                     width: 1px;
                     flex: 1;
-                    background: rgba(255, 255, 255, 0.04);
+                    background: rgba(255, 255, 255, 0.15); /* Increased from 0.04 */
                     position: relative;
                     overflow: hidden;
                 }
@@ -600,15 +600,16 @@ export const Logs: React.FC = () => {
                     z-index: 2;
                 }
                 .logs-page__entry-date {
-                    color: var(--entry-color, rgba(0, 255, 255, 0.6));
+                    color: var(--entry-color, rgba(0, 255, 255, 0.9)); /* Increased from 0.6 */
                     letter-spacing: 0.05em;
+                    font-weight: 600;
                 }
                 .logs-page__entry-arrow {
-                    color: rgba(255, 255, 255, 0.1);
+                    color: rgba(255, 255, 255, 0.3); /* Increased from 0.1 */
                     font-size: 10px;
                 }
                 .logs-page__entry-id {
-                    color: rgba(255, 255, 255, 0.18);
+                    color: rgba(255, 255, 255, 0.5); /* Increased from 0.18 */
                     letter-spacing: 0.05em;
                 }
                 .logs-page__entry-category {
@@ -626,7 +627,7 @@ export const Logs: React.FC = () => {
                     font-family: 'Rajdhani', 'LXGW WenKai Mono', sans-serif;
                     font-size: 21px;
                     font-weight: 700;
-                    color: rgba(255, 255, 255, 0.88);
+                    color: #fff; /* Increased from 0.88 */
                     margin: 0 0 6px 0;
                     line-height: 1.3;
                     transition: all 0.3s ease;
@@ -642,7 +643,7 @@ export const Logs: React.FC = () => {
                 .logs-page__entry-preview {
                     font-family: 'Rajdhani', 'LXGW WenKai Mono', sans-serif;
                     font-size: 13px;
-                    color: rgba(255, 255, 255, 0.32);
+                    color: rgba(255, 255, 255, 0.65); /* Increased from 0.32 */
                     line-height: 1.6;
                     margin: 0 0 10px 0;
                     display: -webkit-box;
@@ -666,7 +667,7 @@ export const Logs: React.FC = () => {
                     display: flex;
                     align-items: center;
                     gap: 4px;
-                    color: rgba(255, 255, 255, 0.18);
+                    color: rgba(255, 255, 255, 0.5); /* Increased from 0.18 */
                 }
                 .logs-page__entry-tags {
                     display: flex;
@@ -674,18 +675,18 @@ export const Logs: React.FC = () => {
                     flex: 1;
                 }
                 .logs-page__entry-tag {
-                    color: rgba(255, 255, 255, 0.15);
+                    color: rgba(255, 255, 255, 0.45); /* Increased from 0.15 */
                     font-size: 10px;
                     transition: color 0.3s;
                 }
                 .logs-page__entry:hover .logs-page__entry-tag {
-                    color: rgba(0, 255, 255, 0.35);
+                    color: rgba(0, 255, 255, 0.7); /* Increased from 0.35 */
                 }
                 .logs-page__entry-read {
                     display: flex;
                     align-items: center;
                     gap: 2px;
-                    color: rgba(255, 255, 255, 0.1);
+                    color: rgba(255, 255, 255, 0.45); /* Increased from 0.1 */
                     font-size: 10px;
                     font-weight: 600;
                     letter-spacing: 0.1em;
