@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { AppState, PersonalityMode } from './types';
+import { AppState, PersonalityMode } from './content/types';
 
 interface AppContextType {
     appState: AppState;

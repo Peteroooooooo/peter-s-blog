@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Artifact } from '../../types';
+import { Artifact } from '../../content/types';
 
 interface ArtifactDetailProps {
     artifact: Artifact;

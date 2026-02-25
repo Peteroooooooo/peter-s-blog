@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogEntry, LogCategory } from '../types';
+import { LogEntry, LogCategory, CATEGORY_COLORS } from '../content/types';
 import { logs, getAllCategories } from '../content/logs';
 import { Clock, Search, Terminal, ChevronRight } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 5;
-
-// Category color map — shared between filter tags and entry badges
-const CATEGORY_COLORS: Record<LogCategory, string> = {
-    [LogCategory.DEV]: '#60ff60',
-    [LogCategory.RESEARCH]: '#a78bfa',
-    [LogCategory.SYSTEM]: '#fbbf24',
-    [LogCategory.THOUGHTS]: '#00FFFF',
-    [LogCategory.TUTORIAL]: '#f472b6',
-    [LogCategory.HARDWARE]: '#fb923c',
-};
 
 export const Logs: React.FC = () => {
     const navigate = useNavigate();
@@ -268,8 +258,8 @@ export const Logs: React.FC = () => {
                     left: -8px;
                     width: 12px;
                     height: 12px;
-                    border-top: 2px solid rgba(0, 255, 255, 0.4);
-                    border-left: 2px solid rgba(0, 255, 255, 0.4);
+                    border-top: 2px solid rgba(0, 255, 255, 0.8);
+                    border-left: 2px solid rgba(0, 255, 255, 0.8);
                 }
                 .logs-page__header-title {
                     display: flex;
@@ -282,7 +272,7 @@ export const Logs: React.FC = () => {
                 }
                 .logs-page__header-icon {
                     color: #00FFFF;
-                    filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.5));
+                    filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.8));
                 }
                 .logs-page__cursor {
                     display: inline-block;
@@ -291,7 +281,7 @@ export const Logs: React.FC = () => {
                     background: #00FFFF;
                     animation: cursorBlink 1s step-end infinite;
                     margin-left: 2px;
-                    box-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+                    box-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
                 }
                 @keyframes cursorBlink {
                     0%, 50% { opacity: 1; }
@@ -299,7 +289,7 @@ export const Logs: React.FC = () => {
                 }
                 .logs-page__header-sub {
                     font-size: 10px;
-                    color: rgba(0, 255, 255, 0.3);
+                    color: rgba(0, 255, 255, 0.7);
                     letter-spacing: 0.12em;
                     margin-top: 4px;
                 }
@@ -336,7 +326,7 @@ export const Logs: React.FC = () => {
                 /* ════════ SEPARATORS ════════ */
                 .logs-page__separator {
                     height: 1px;
-                    background: linear-gradient(to right, rgba(0, 255, 255, 0.3), rgba(0, 255, 255, 0.05));
+                    background: linear-gradient(to right, rgba(0, 255, 255, 0.6), rgba(0, 255, 255, 0.1));
                     margin-bottom: 16px;
                 }
                 .logs-page__separator--main {
@@ -355,9 +345,9 @@ export const Logs: React.FC = () => {
                 }
                 .logs-page__separator--double {
                     height: 1px;
-                    background: linear-gradient(to right, rgba(0, 255, 255, 0.5), rgba(0, 255, 255, 0.02));
+                    background: linear-gradient(to right, rgba(0, 255, 255, 0.8), rgba(0, 255, 255, 0.1));
                     margin-bottom: 28px;
-                    box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+                    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
                     position: relative;
                 }
 
@@ -371,7 +361,7 @@ export const Logs: React.FC = () => {
                 }
                 .logs-page__filter-prompt {
                     font-size: 11px;
-                    color: rgba(0, 255, 255, 0.5);
+                    color: rgba(0, 255, 255, 0.9);
                     margin-right: 4px;
                 }
                 .logs-page__filter-tag {
@@ -407,7 +397,7 @@ export const Logs: React.FC = () => {
                 }
                 .logs-page__search-prompt {
                     font-size: 11px;
-                    color: rgba(0, 255, 255, 0.5);
+                    color: rgba(0, 255, 255, 0.9);
                     flex-shrink: 0;
                 }
                 .logs-page__search-input-wrapper {
@@ -432,7 +422,7 @@ export const Logs: React.FC = () => {
                     outline: none;
                     font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
                     font-size: 12px;
-                    color: rgba(255, 255, 255, 0.7);
+                    color: rgba(255, 255, 255, 0.9);
                     width: 100%;
                     caret-color: #00FFFF;
                 }
@@ -641,9 +631,11 @@ export const Logs: React.FC = () => {
 
                 /* ════════ PREVIEW ════════ */
                 .logs-page__entry-preview {
-                    font-family: 'Rajdhani', 'LXGW WenKai Mono', sans-serif;
+                    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
                     font-size: 13px;
-                    color: rgba(255, 255, 255, 0.65); /* Increased from 0.32 */
+                    font-weight: 400;
+                    letter-spacing: 0.5px;
+                    color: #d1d5db;
                     line-height: 1.6;
                     margin: 0 0 10px 0;
                     display: -webkit-box;
@@ -680,7 +672,7 @@ export const Logs: React.FC = () => {
                     transition: color 0.3s;
                 }
                 .logs-page__entry:hover .logs-page__entry-tag {
-                    color: rgba(0, 255, 255, 0.7); /* Increased from 0.35 */
+                    color: rgba(0, 255, 255, 0.85); /* Increased from 0.7 */
                 }
                 .logs-page__entry-read {
                     display: flex;
@@ -711,7 +703,7 @@ export const Logs: React.FC = () => {
                     gap: 12px;
                     padding: 24px;
                     font-size: 10px;
-                    color: rgba(0, 255, 255, 0.4);
+                    color: rgba(0, 255, 255, 0.7);
                     letter-spacing: 0.1em;
                 }
                 .logs-page__loading-bar {

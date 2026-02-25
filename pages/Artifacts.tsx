@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArtifactCarousel } from '../components/artifacts/ArtifactCarousel';
 import { ArtifactDetail } from '../components/artifacts/ArtifactDetail';
-import { Artifact } from '../types';
+import { Artifact } from '../content/types';
 
 // Sample artifacts data
 const artifacts: Artifact[] = [

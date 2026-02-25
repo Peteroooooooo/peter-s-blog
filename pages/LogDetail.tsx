@@ -2,10 +2,55 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { logs, getLogById } from '../content/logs';
-import { ArrowLeft, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CATEGORY_COLORS } from '../content/types';
+import { ArrowLeft, Clock, ChevronLeft, ChevronRight, Check, Copy, TerminalSquare } from 'lucide-react';
+
+const CodeBlock = ({ language, value }: { language: string, value: string }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(value);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="log-detail__code-wrapper">
+            <div className="log-detail__code-header">
+                <div className="log-detail__code-lang">
+                    <TerminalSquare size={12} className="opacity-50" />
+                    <span>{language || 'text'}</span>
+                </div>
+                <button
+                    className={`log-detail__code-copy ${copied ? 'copied' : ''}`}
+                    onClick={handleCopy}
+                    aria-label="Copy code"
+                >
+                    {copied ? <Check size={14} /> : <Copy size={14} />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                </button>
+            </div>
+            <SyntaxHighlighter
+                style={vscDarkPlus}
+                language={language}
+                PreTag="div"
+                customStyle={{
+                    background: 'transparent',
+                    padding: '16px',
+                    margin: 0,
+                    fontSize: '13px',
+                    fontFamily: "'JetBrains Mono', 'LXGW WenKai Mono', monospace",
+                }}
+            >
+                {value}
+            </SyntaxHighlighter>
+        </div>
+    );
+};
 
 export const LogDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -36,7 +81,7 @@ export const LogDetail: React.FC = () => {
                         style={{
                             marginTop: '24px',
                             background: 'none',
-                            border: '1px solid rgba(0,255,255,0.3)',
+                            border: '1px solid rgba(0,255,255,0.6)',
                             color: '#00FFFF',
                             padding: '8px 20px',
                             fontFamily: "'JetBrains Mono', 'LXGW WenKai Mono', monospace",
@@ -68,7 +113,10 @@ export const LogDetail: React.FC = () => {
                     <span className="log-detail__meta-sep">|</span>
                     <span className="log-detail__meta-date">DATE: {log.date}</span>
                     <span className="log-detail__meta-sep">|</span>
-                    <span className={`log-detail__meta-category log-detail__cat--${log.category.toLowerCase()}`}>
+                    <span
+                        className="log-detail__meta-category"
+                        style={{ color: CATEGORY_COLORS[log.category] }}
+                    >
                         [{log.category}]
                     </span>
                     <span className="log-detail__meta-sep">|</span>
@@ -84,29 +132,13 @@ export const LogDetail: React.FC = () => {
                 {/* Markdown Content */}
                 <article className="log-detail__content">
                     <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
+                        remarkPlugins={[remarkGfm, remarkBreaks]}
                         components={{
                             code({ className, children, ...props }) {
                                 const match = /language-(\w+)/.exec(className || '');
                                 const codeString = String(children).replace(/\n$/, '');
                                 if (match) {
-                                    return (
-                                        <SyntaxHighlighter
-                                            style={vscDarkPlus}
-                                            language={match[1]}
-                                            PreTag="div"
-                                            customStyle={{
-                                                background: 'rgba(10, 10, 15, 0.8)',
-                                                border: '1px solid rgba(0, 255, 255, 0.1)',
-                                                borderRadius: '0',
-                                                fontSize: '12px',
-                                                padding: '16px',
-                                                margin: '16px 0',
-                                            }}
-                                        >
-                                            {codeString}
-                                        </SyntaxHighlighter>
-                                    );
+                                    return <CodeBlock language={match[1]} value={codeString} />;
                                 }
                                 return (
                                     <code className="log-detail__inline-code" {...props}>
@@ -114,6 +146,21 @@ export const LogDetail: React.FC = () => {
                                     </code>
                                 );
                             },
+                            img({ src, alt, ...props }) {
+                                // Automatically remap relative paths to the corresponding content/image folder
+                                let imageSrc = src;
+                                if (src && src.startsWith('./') && log?.id) {
+                                    imageSrc = `/content/image/${log.id}/${src.replace('./', '')}`;
+                                }
+
+                                return (
+                                    <img
+                                        src={imageSrc}
+                                        alt={alt || "Log Article Image"}
+                                        {...props}
+                                    />
+                                );
+                            }
                         }}
                     >
                         {log.content}
@@ -190,7 +237,7 @@ export const LogDetail: React.FC = () => {
                     gap: 8px;
                     background: none;
                     border: none;
-                    color: rgba(0, 255, 255, 0.5);
+                    color: rgba(0, 255, 255, 0.8);
                     font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
                     font-size: 11px;
                     letter-spacing: 0.1em;
@@ -214,7 +261,7 @@ export const LogDetail: React.FC = () => {
                     margin-bottom: 16px;
                 }
                 .log-detail__meta-id {
-                    color: rgba(0, 255, 255, 0.5);
+                    color: rgba(0, 255, 255, 0.8);
                 }
                 .log-detail__meta-sep {
                     color: rgba(255, 255, 255, 0.1);
@@ -227,12 +274,6 @@ export const LogDetail: React.FC = () => {
                     font-weight: 700;
                     letter-spacing: 0.1em;
                 }
-                .log-detail__cat--dev { color: #60ff60; }
-                .log-detail__cat--research { color: #a78bfa; }
-                .log-detail__cat--system { color: #fbbf24; }
-                .log-detail__cat--thoughts { color: #00FFFF; }
-                .log-detail__cat--tutorial { color: #f472b6; }
-                .log-detail__cat--hardware { color: #fb923c; }
                 .log-detail__meta-time {
                     display: flex;
                     align-items: center;
@@ -254,124 +295,238 @@ export const LogDetail: React.FC = () => {
                 /* Divider */
                 .log-detail__divider {
                     height: 1px;
-                    background: linear-gradient(to right, rgba(0, 255, 255, 0.3), rgba(0, 255, 255, 0.02));
+                    background: linear-gradient(to right, rgba(0, 255, 255, 0.6), rgba(0, 255, 255, 0.05));
                     margin: 24px 0;
                 }
 
-                /* Content — Markdown styled */
+                /* Content — Markdown styled (Modern Github/Docs Style) */
                 .log-detail__content {
-                    font-family: 'Rajdhani', 'LXGW WenKai Mono', sans-serif;
+                    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
                     font-size: 16px;
-                    line-height: 1.8;
-                    color: rgba(255, 255, 255, 0.75);
+                    font-weight: 400;
+                    letter-spacing: 0.3px;
+                    line-height: 1.75;
+                    color: #d1d5db;
                 }
                 .log-detail__content h1,
                 .log-detail__content h2,
-                .log-detail__content h3 {
-                    font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
-                    color: rgba(255, 255, 255, 0.9);
-                    margin: 32px 0 12px 0;
+                .log-detail__content h3,
+                .log-detail__content h4 {
+                    font-family: 'Rajdhani', 'LXGW WenKai Mono', sans-serif;
+                    color: #f3f4f6;
+                    font-weight: 700;
+                    margin-top: 2em;
+                    margin-bottom: 1em;
                     line-height: 1.3;
                 }
                 .log-detail__content h1 {
-                    font-size: 24px;
-                    color: #00FFFF;
-                    display: none; /* Hide H1 since we have the title */
+                    display: none; /* Handled by page header */
                 }
                 .log-detail__content h2 {
-                    font-size: 18px;
-                    padding-bottom: 6px;
-                    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-                }
-                .log-detail__content h2::before {
-                    content: '▸ ';
-                    color: #00FFFF;
-                    opacity: 0.6;
+                    font-size: 24px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 }
                 .log-detail__content h3 {
-                    font-size: 15px;
+                    font-size: 20px;
                 }
-                .log-detail__content h3::before {
-                    content: '▹ ';
-                    color: rgba(0, 255, 255, 0.4);
+                .log-detail__content h4 {
+                    font-size: 16px;
                 }
                 .log-detail__content p {
-                    margin: 12px 0;
+                    margin-top: 0;
+                    margin-bottom: 1.5em;
                 }
                 .log-detail__content strong {
-                    color: rgba(255, 255, 255, 0.95);
-                    font-weight: 700;
+                    color: #fff;
+                    font-weight: 600;
                 }
                 .log-detail__content em {
-                    color: rgba(0, 255, 255, 0.6);
+                    color: rgba(255, 255, 255, 0.8);
                     font-style: italic;
                 }
                 .log-detail__content a {
                     color: #00FFFF;
                     text-decoration: none;
-                    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-                    transition: border-color 0.2s;
+                    background-image: linear-gradient(rgba(0, 255, 255, 0.4), rgba(0, 255, 255, 0.4));
+                    background-position: 0% 100%;
+                    background-repeat: no-repeat;
+                    background-size: 100% 1px;
+                    transition: all 0.2s ease;
                 }
                 .log-detail__content a:hover {
-                    border-color: #00FFFF;
+                    color: #fff;
+                    background-size: 100% 100%;
+                    background-image: linear-gradient(rgba(0, 255, 255, 0.8), rgba(0, 255, 255, 0.8));
+                    padding: 0 2px;
+                    margin: 0 -2px;
+                    border-radius: 2px;
                 }
                 .log-detail__content blockquote {
-                    border-left: 3px solid rgba(0, 255, 255, 0.4);
-                    margin: 16px 0;
-                    padding: 12px 16px;
-                    background: rgba(0, 255, 255, 0.03);
-                    color: rgba(255, 255, 255, 0.6);
-                    font-style: italic;
+                    position: relative;
+                    margin: 1.5em 0;
+                    padding: 16px 20px;
+                    background: rgba(0, 255, 255, 0.05);
+                    border-left: 4px solid rgba(0, 255, 255, 0.8);
+                    border-radius: 0 8px 8px 0;
+                    color: rgba(255, 255, 255, 0.75);
+                    word-wrap: break-word; /* Ensure blockquote itself handles long words gracefully */
+                }
+                .log-detail__content blockquote p:last-child {
+                    margin-bottom: 0;
                 }
                 .log-detail__content ul,
                 .log-detail__content ol {
-                    padding-left: 20px;
-                    margin: 12px 0;
+                    padding-left: 24px;
+                    margin-top: 0;
+                    margin-bottom: 1.5em;
                 }
                 .log-detail__content li {
-                    margin: 6px 0;
+                    margin: 8px 0;
+                }
+                .log-detail__content ul li {
+                    list-style-type: disc;
+                }
+                .log-detail__content ol li {
+                    list-style-type: decimal;
+                }
+                .log-detail__content ul ul li,
+                .log-detail__content ol ul li {
+                    list-style-type: circle;
                 }
                 .log-detail__content li::marker {
-                    color: rgba(0, 255, 255, 0.4);
+                    color: rgba(0, 255, 255, 0.6);
                 }
+                .log-detail__content li > p {
+                    margin-bottom: 0; /* Remove gap within list items to prevent huge line spacing */
+                }
+                
+                /* Images */
+                .log-detail__content img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 8px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    margin: 1em 0;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                }
+                
+                /* Inline Code */
                 .log-detail__inline-code {
                     font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
-                    font-size: 13px;
-                    background: rgba(0, 255, 255, 0.06);
-                    border: 1px solid rgba(0, 255, 255, 0.1);
-                    padding: 1px 6px;
-                    color: #00FFFF;
+                    font-size: 0.85em;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    border-radius: 4px;
+                    padding: 0.2em 0.4em;
+                    color: #e5e7eb;
+                    word-break: break-all; /* Allow breaking long codes exactly where they overflow */
+                    white-space: pre-wrap; /* Preserve spaces if any */
                 }
+
+                /* Custom Code Block with Header */
+                .log-detail__code-wrapper {
+                    margin: 1.5em 0;
+                    background: #111116; /* Very dark background for the code itself */
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                }
+                .log-detail__code-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background: rgba(255, 255, 255, 0.03);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    padding: 8px 16px;
+                }
+                .log-detail__code-lang {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.5);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                .log-detail__code-copy {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    background: none;
+                    border: 1px solid transparent;
+                    color: rgba(255, 255, 255, 0.4);
+                    font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
+                    font-size: 11px;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+                .log-detail__code-copy:hover {
+                    color: #fff;
+                    background: rgba(255, 255, 255, 0.1);
+                }
+                .log-detail__code-copy.copied {
+                    color: #60ff60;
+                    border-color: rgba(96, 255, 96, 0.3);
+                    background: rgba(96, 255, 96, 0.1);
+                }
+
+                /* Custom Code Block Scrollbar */
+                .log-detail__code-wrapper div::-webkit-scrollbar {
+                    width: 6px;
+                    height: 6px;
+                }
+                .log-detail__code-wrapper div::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .log-detail__code-wrapper div::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 4px;
+                }
+                .log-detail__code-wrapper div::-webkit-scrollbar-thumb:hover {
+                    background: rgba(0, 255, 255, 0.4);
+                }
+
+
+                /* Tables */
                 .log-detail__content table {
                     width: 100%;
                     border-collapse: collapse;
-                    margin: 16px 0;
-                    font-size: 14px;
+                    margin: 2em 0;
+                    font-size: 0.9em;
+                    overflow-x: auto;
+                    display: block; /* To handle horizontal scroll on small screens */
                 }
                 .log-detail__content th {
-                    background: rgba(0, 255, 255, 0.06);
-                    color: rgba(0, 255, 255, 0.8);
-                    font-family: 'JetBrains Mono', 'LXGW WenKai Mono', monospace;
-                    font-size: 11px;
-                    font-weight: 700;
-                    letter-spacing: 0.1em;
+                    background: rgba(255, 255, 255, 0.05);
+                    color: #f3f4f6;
+                    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+                    font-weight: 600;
                     text-align: left;
-                    padding: 8px 12px;
-                    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+                    padding: 12px 16px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                 }
                 .log-detail__content td {
-                    padding: 8px 12px;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-                    color: rgba(255, 255, 255, 0.6);
+                    padding: 12px 16px;
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    color: rgba(255, 255, 255, 0.75);
+                }
+                .log-detail__content tr:nth-child(even) td {
+                    background: rgba(255, 255, 255, 0.02);
                 }
                 .log-detail__content tr:hover td {
-                    background: rgba(0, 255, 255, 0.02);
+                    background: rgba(0, 255, 255, 0.03);
                 }
+                
                 .log-detail__content hr {
                     border: none;
                     height: 1px;
-                    background: rgba(255, 255, 255, 0.06);
-                    margin: 24px 0;
+                    background: rgba(255, 255, 255, 0.1);
+                    margin: 3em 0;
                 }
 
                 /* Tags */
@@ -387,7 +542,7 @@ export const LogDetail: React.FC = () => {
                     color: rgba(255, 255, 255, 0.2);
                 }
                 .log-detail__tag {
-                    color: rgba(0, 255, 255, 0.35);
+                    color: rgba(0, 255, 255, 0.6);
                 }
 
                 /* Nav */
@@ -422,7 +577,7 @@ export const LogDetail: React.FC = () => {
                     display: block;
                     font-size: 9px;
                     letter-spacing: 0.15em;
-                    color: rgba(0, 255, 255, 0.4);
+                    color: rgba(0, 255, 255, 0.7);
                     margin-bottom: 4px;
                 }
                 .log-detail__nav-title {

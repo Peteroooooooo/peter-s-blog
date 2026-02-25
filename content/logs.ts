@@ -1,4 +1,4 @@
-import { LogEntry, LogCategory } from '../types';
+import { LogEntry, LogCategory } from './types';
 
 // Let Vite automatically find all .md files in the content/logs folder
 // Eager mode bundles them instantly, '?raw' imports them as raw string content

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../store';
-import { AppState, PersonalityMode } from '../types';
+import { AppState, PersonalityMode } from '../content/types';
 import { ElectricOverlay } from './ElectricOverlay';
 
 export const Background: React.FC = () => {

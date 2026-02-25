@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { PersonalityMode } from '../types';
+import { PersonalityMode } from '../content/types';
 
 export const About: React.FC = () => {
     const { personality } = useAppStore();

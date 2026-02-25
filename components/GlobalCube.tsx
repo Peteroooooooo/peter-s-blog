@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppStore } from '../store';
-import { AppState, Artifact } from '../types';
+import { AppState, Artifact } from '../content/types';
 import { CubeProjection } from './artifacts/CubeProjection';
 
 export const GlobalCube: React.FC = () => {

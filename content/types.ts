@@ -26,7 +26,18 @@ export enum LogCategory {
     THOUGHTS = 'THOUGHTS',
     TUTORIAL = 'TUTORIAL',
     HARDWARE = 'HARDWARE',
+    TECH = 'NODE',
 }
+
+export const CATEGORY_COLORS: Record<LogCategory, string> = {
+    [LogCategory.DEV]: '#60ff60',
+    [LogCategory.RESEARCH]: '#a78bfa',
+    [LogCategory.SYSTEM]: '#fbbf24',
+    [LogCategory.THOUGHTS]: '#00FFFF',
+    [LogCategory.TUTORIAL]: '#f472b6',
+    [LogCategory.HARDWARE]: '#fb923c',
+    [LogCategory.TECH]: '#ef4444',
+};
 
 export interface LogEntry {
     id: string;

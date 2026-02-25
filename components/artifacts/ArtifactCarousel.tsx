@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { ArtifactCard } from './ArtifactCard';
-import { Artifact } from '../../types';
+import { Artifact } from '../../content/types';
 
 interface ArtifactCarouselProps {
     artifacts: Artifact[];

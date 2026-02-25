@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Artifact } from '../../types';
+import { Artifact } from '../../content/types';
 
 interface CubeProjectionProps {
     artifact: Artifact | null;

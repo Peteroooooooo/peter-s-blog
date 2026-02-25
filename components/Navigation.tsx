@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppStore } from '../store';
-import { AppState } from '../types';
+import { AppState } from '../content/types';
 import { Activity, Box, Cpu, FileText } from 'lucide-react';
 
 export const Navigation: React.FC = () => {

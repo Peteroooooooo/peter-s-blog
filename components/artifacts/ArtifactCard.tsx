@@ -1,5 +1,5 @@
 import React from 'react';
-import { Artifact } from '../../types';
+import { Artifact } from '../../content/types';
 
 interface ArtifactCardProps {
     artifact: Artifact;
